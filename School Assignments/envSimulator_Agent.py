@@ -1,7 +1,9 @@
+import numpy as np
+
 # ---input row number---
 rowInput = 0
 while True:
-    rowInput = input("Input how many rows the map has: ")
+    rowInput = input("Input how many rows the dirt map has: ")
     try:
         rowInput = int(rowInput)
         if rowInput <= 0:
@@ -11,14 +13,14 @@ while True:
     except ValueError:
         print("Please input an int:")
         continue
-print("The map has " + str(rowInput) + " rows.\n")
+print("The dirt_map has " + str(rowInput) + " rows.\n")
 # ---input row number end---
 
 
 # ---input column number---
 columnInput = 0
 while True:
-    columnInput = input("Input how many columns the map has: ")
+    columnInput = input("Input how many columns the dirt map has: ")
     try:
         columnInput = int(columnInput)
         if columnInput <= 0:
@@ -28,73 +30,67 @@ while True:
     except ValueError:
         print("Please input an int:")
         continue
-print("The map has " + str(columnInput) + " columns.\n")
+print("The dirt map has " + str(columnInput) + " columns.\n")
 # ---input column number end---
 
 
-
-
 # =====================Environment Simulator Begin=====================
-# ---generate a random map and agent starting position given the row and column numbers---
-import numpy as np
+# ---generate a random dirt map and agent starting position given the row and column numbers---
 
 x = rowInput
 y = columnInput
-map = np.empty((x, y), dtype=int)
+dirt_map = np.empty((x, y), dtype=int)
 stPosX = 0
 stPosY = 0
 dirtCounter = 0
 
 if (x > 0) and (y > 0):
-    # map = np.empty((x,y), dtype = bool)
+    # dirt_map = np.empty((x,y), dtype = bool)
     stPosX = np.random.randint(0, x)
     stPosY = np.random.randint(0, y)
-    strPos = map[stPosX][stPosY]
+    strPos = dirt_map[stPosX][stPosY]
     for i in range(0, x):
         for j in range(0, y):
-            map[i][j] = bool(np.random.choice([0, 1]))
-            if map[i][j] == 1:
+            dirt_map[i][j] = bool(np.random.choice([0, 1]))
+            if dirt_map[i][j] == 1:
                 dirtCounter += 1
 elif (x > 0) and (y == 0):
-    map = np.zeros((x, 1), dtype=int)
+    dirt_map = np.zeros((x, 1), dtype=int)
     stPosX = np.random.randint(0, x)
     # stPosY = 0
-    strPos = map[stPosX][0]
+    strPos = dirt_map[stPosX][0]
     for i in range(0, x):
-        map[i][0] = bool(np.random.choice([0, 1]))
-        if map[i][0] == 1:
+        dirt_map[i][0] = bool(np.random.choice([0, 1]))
+        if dirt_map[i][0] == 1:
             dirtCounter += 1
 elif (x == 0) and (y > 0):
-    map = np.zeros((1, y), dtype=int)
+    dirt_map = np.zeros((1, y), dtype=int)
     # stPosX = 0
     stPosY = np.random.randint(0, y)
-    strPos = map[0][stPosY]
+    strPos = dirt_map[0][stPosY]
     for j in range(x, y):
-        map[0][j] = bool(np.random.choice([0, 1]))
-        if map[0][j] == 1:
+        dirt_map[0][j] = bool(np.random.choice([0, 1]))
+        if dirt_map[0][j] == 1:
             dirtCounter += 1
-# ---generate a random map and agent starting position given the row and column numbers ends---
+# ---generate a random dirt map and agent starting position given the row and column numbers ends---
 # =====================Environment Simulator End=====================
 
-
-
 print("The randomized environment looks like:\n")
-print(map)
-print("\nThe starting position is: map[" + str(stPosX) + "][" + str(stPosY) + "].")
-print("\nThere is/are " + str(dirtCounter) + " dirty square(s) in the map.")
+print(dirt_map)
+print("\nThe starting position is: dirt_map[" + str(stPosX) + "][" + str(stPosY) + "].")
+print("\nThere is/are " + str(dirtCounter) + " dirty square(s) in the dirt_map.")
 
 cPosX = stPosX
 cPosY = stPosY
 
-print("\nAgent is now at map[" + str(cPosX) + "][" + str(cPosY) + "].")
-
+print("\nAgent is now at dirt_map[" + str(cPosX) + "][" + str(cPosY) + "].")
 
 # =====================Agent Begin=====================
-def agent(cPosX, cPosY, map):
+def agent(cPosX, cPosY, dirt_map):
     # ---------------------sensor begin---------------------
     pos = 0
 
-    def sensor(cPosX, cPosY, map):
+    def sensor(cPosX, cPosY, dirt_map):
         global pos
         if cPosX == 0 and cPosY == 0:
             pos = 0
@@ -119,23 +115,21 @@ def agent(cPosX, cPosY, map):
     # ---------------------sensor end---------------------
 
     # ---------------------actuator begin---------------------
-    dirt = map[cPosX][cPosY]
+    dirt = dirt_map[cPosX][cPosY]
 
     def actuator(pos, dirt):
         def clean():
-            global map
+            global dirt_map
             global cPosX
             global cPosY
             if dirt == 1:
-                map[cPosX][cPosY] = 0
-                print("\nThe dirt in map[" + str(cPosX) + "][" + str(cPosY) + "] is cleaned!")
+                dirt_map[cPosX][cPosY] = 0
+                print("\nThe dirt in dirt_map[" + str(cPosX) + "][" + str(cPosY) + "] is cleaned!")
                 print("\nNow the environment looks like: \n")
-                print(map)
+                print(dirt_map)
             else:
-                print("\nThere's no dirt in map[" + str(cPosX) + "][" + str(cPosY) + "]!")
-                # return
+                print("\nThere's no dirt in dirt_map[" + str(cPosX) + "][" + str(cPosY) + "]!")
 
-        movNum = 0
         actList = [0]
 
         def chooseMov(pos):
@@ -162,32 +156,32 @@ def agent(cPosX, cPosY, map):
 
         def movAct(actList):
             move = ""
-            movNum = np.random.choice(actList)
+            mov_num = np.random.choice(actList)
             global cPosX
             global cPosY
-            if movNum == 0:
+            if mov_num == 0:
                 move = "MOVE LEFT"
-                cPosY = cPosY - 1
-            elif movNum == 1:
+                cPosY -= 1
+            elif mov_num == 1:
                 move = "MOVE RIGHT"
-                cPosY = cPosY + 1
-            elif movNum == 2:
+                cPosY += 1
+            elif mov_num == 2:
                 move = "MOVE UP"
-                cPosX = cPosX - 1
-            elif movNum == 3:
+                cPosX -= 1
+            elif mov_num == 3:
                 move = "MOVE DOWN"
-                cPosX = cPosX + 1
+                cPosX += 1
             print("\nTake action: '" + move + "'")
-            print("\nNow agent is at point: map[" + str(cPosX) + "][" + str(cPosY) + "]")
-            return cPosX, cPosY, movNum
+            print("\nNow agent is at point: dirt_map[" + str(cPosX) + "][" + str(cPosY) + "]")
+            return cPosX, cPosY, mov_num
 
         clean()
-        movAct(chooseMov(sensor(cPosX, cPosY, map)))
+        movAct(chooseMov(sensor(cPosX, cPosY, dirt_map)))
         # return
 
     # ---------------------actuator end---------------------
 
-    sensor(cPosX, cPosY, map)
+    sensor(cPosX, cPosY, dirt_map)
     actuator(pos, dirt)
 
 
@@ -201,7 +195,7 @@ def grader(dirtCounter):
     dirtRam = 0
     for i in range(rowInput):
         for j in range(columnInput):
-            if map[i][j] == 1:
+            if dirt_map[i][j] == 1:
                 dirtRam += 1
     # print("\nThere are " + str(dirtCounter - dirtRam) + "dirty square(s) cleaned.")
     # print("\n" + str(dirtRam) + " dirty square(s) left.")
@@ -213,7 +207,7 @@ def grader(dirtCounter):
 steps = int(input("\nInput how many steps you wanna run with this agent: "))
 n = 0
 while n < steps:
-    agent(cPosX, cPosY, map)
+    agent(cPosX, cPosY, dirt_map)
     n += 1
 
 print("\nAfter " + str(steps) + " moves, there are " + str(dirtCounter - grader(dirtCounter)) +
